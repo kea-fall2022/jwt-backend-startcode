@@ -13,7 +13,7 @@ import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
-import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -34,7 +34,7 @@ import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
 
 @EnableWebSecurity
-@EnableGlobalMethodSecurity(prePostEnabled = true)
+@EnableMethodSecurity(prePostEnabled = true)
 
 @Configuration
 public class SecurityConfig {
@@ -79,29 +79,29 @@ public class SecurityConfig {
 
     http.authorizeHttpRequests((authorize) -> authorize
             //Obviously we need to be able to login without being logged in :-)
-            .antMatchers(HttpMethod.POST, "/api/auth/login").permitAll()
+            .requestMatchers(HttpMethod.POST, "/api/auth/login").permitAll()
 
             //Required in order to use the h2-console
-            .antMatchers("/h2*/**").permitAll()
+            .requestMatchers("/h2*/**").permitAll()
 
-            .antMatchers("/").permitAll() //Allow the default index.html file
+            .requestMatchers("/").permitAll() //Allow the default index.html file
 
             //Next two lines only required if you plan to do the cookie/session-demo from within this project
-            .antMatchers("/session-demo.html").permitAll()
-            .antMatchers("/api/cookie/**").permitAll()
+            .requestMatchers("/session-demo.html").permitAll()
+            .requestMatchers("/api/cookie/**").permitAll()
 
             //Allow anonymous access to this endpoint
-            //.antMatchers(HttpMethod.GET,"/api/demo/anonymous").permitAll()
+            //.requestMatchers(HttpMethod.GET,"/api/demo/anonymous").permitAll()
 
             //necessary to allow for "nice" JSON Errors
-            .antMatchers("/error").permitAll()
+            .requestMatchers("/error").permitAll()
 
-            //.antMatchers("/", "/**").permitAll()
+            //.requestMatchers("/", "/**").permitAll()
 
-           // .antMatchers(HttpMethod.GET,"/api/demo/anonymous").permitAll());
+           // .requestMatchers(HttpMethod.GET,"/api/demo/anonymous").permitAll());
 
            // Demonstrates another way to add roles to an endpoint
-           // .antMatchers(HttpMethod.GET, "/api/demo/admin").hasAuthority("ADMIN")
+           // .requestMatchers(HttpMethod.GET, "/api/demo/admin").hasAuthority("ADMIN")
     .anyRequest().authenticated());
 
     return http.build();
